@@ -14,6 +14,8 @@
 - make a proper icon
 - add a themed background
 
+Please let me know if sonething breaks
+
 ## A NOTICE:
 Please do not use this to generate characters with AI. This is strictly a tool for artists to use.
 No "vibe coding" was used to make prompts or code.
