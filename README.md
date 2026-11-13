@@ -1,6 +1,7 @@
 # Character art prompt randomizer!
 
 ## FEATURES:
+- copy directly to clipboard with one button!
 - Editable prompt list in the prompt.txt.
 - lock in/disable prompt with checkbox
 - reroll individual prompts
