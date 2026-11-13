@@ -11,15 +11,15 @@ with open(prompt_file) as file:
     specieslist = [string.strip() for string in lines[3].removeprefix("Species: ").split(',')]
     joblist = [string.strip() for string in lines[4].removeprefix("Job or title: ").split(',')]
     mainlist = [string.strip() for string in lines[5].removeprefix("Main characteristic: ").split(',')]
-    featurelist = [string.strip() for string in lines[6].removeprefix("Features: ").split(',')]
-    itemlist = [string.strip() for string in lines[7].removeprefix("Item: ").split(',')]
-    superslist = [string.strip() for string in lines[8].removeprefix("Super natural ability: ").split(',')]
-    animallist = [string.strip() for string in lines[9].removeprefix("Animal aspect: ").split(',')]
-    envirolist = [string.strip() for string in lines[10].removeprefix("Environment: ").split(',')]
-    settinglist = [string.strip() for string in lines[11].removeprefix("Setting: ").split(',')]
+    itemlist = [string.strip() for string in lines[6].removeprefix("Item: ").split(',')]
+    superslist = [string.strip() for string in lines[7].removeprefix("Super natural ability: ").split(',')]
+    animallist = [string.strip() for string in lines[8].removeprefix("Animal aspect: ").split(',')]
+    envirolist = [string.strip() for string in lines[9].removeprefix("Environment: ").split(',')]
+    settinglist = [string.strip() for string in lines[10].removeprefix("Setting: ").split(',')]
+    extralist = (joblist + mainlist + itemlist + superslist + animallist)
 
 def randomize():
-    global gender, stature, age, species, job, main, feature, item, supers, animal, enviro, setting
+    global gender, stature, age, species, job, main, item, supers, animal, enviro, setting
     if reroll_gender_enabled:
         gender.set(str(random.choice(genderlist)))
     if reroll_stature_enabled:
@@ -32,8 +32,6 @@ def randomize():
         job.set(str(random.choice(joblist))) 
     if reroll_main_enabled:
         main.set(str(random.choice(mainlist))) 
-    if reroll_feature_enabled:
-        feature.set(str(random.choice(featurelist))) 
     if reroll_item_enabled:
         item.set(str(random.choice(itemlist))) 
     if reroll_supers_enabled:
@@ -44,10 +42,27 @@ def randomize():
         enviro.set(str(random.choice(envirolist))) 
     if reroll_setting_enabled:
         setting.set(str(random.choice(settinglist))) 
+    if reroll_extra_enabled:
+        extra.set(str(random.choice(extralist)))
 
 def copy_to_clipboard():
     window.clipboard_clear()
-    window.clipboard_append(f"species: {species.get()}\nStature: {stature.get()}\nAge: {age.get()}\nSpecies: {species.get()}\nJob: {job.get()}\nMain characteristic: {main.get()}\nfeature: {feature.get()}\nItem: {item.get()}\nSuper natural ability: {supers.get()}\nAnimal aspect: {animal.get()}\nEnvironment: {enviro.get()}\nSetting: {setting.get()}") # what gets copied
+
+    clipboard = (
+        f"Gender: {gender.get()}\n"
+        f"Stature: {stature.get()}\n"
+        f"Age: {age.get()}\n"
+        f"Species: {species.get()}\n"
+        f"Job: {job.get()}\n"
+        f"Main characteristic: {main.get()}\n"
+        f"Item: {item.get()}\n"
+        f"Super natural ability: {supers.get()}\n"
+        f"Animal aspect: {animal.get()}\n"
+        f"Environment: {enviro.get()}\n"
+        f"Setting: {setting.get()}\n"
+        f"Extra: {extra.get()}")
+
+    window.clipboard_append(clipboard)
     window.update() # keeps the clipboard content after the program is closed
 
 # all of the categories commands
@@ -220,34 +235,6 @@ def reroll_main():
             previous_main = new_main
             main.set(str(new_main))
 
-reroll_feature_enabled = True
-previous_feature = None
-new_feature = None
-
-def toggle_reroll_feature():
-    global reroll_feature_enabled
-    reroll_feature_enabled = not reroll_feature_enabled
-
-    if reroll_feature_enabled:
-        featurelabel2.config(fg="#9ADCFF")
-        featurelabel1.config(fg="white")
-    else:
-        featurelabel2.config(fg="gray")
-        featurelabel1.config(fg="gray")
-
-def reroll_feature():
-    global feature, previous_feature
-    if reroll_feature_enabled:
-        available_feature_s = list(set(featurelist))
-
-        if previous_feature in available_feature_s:
-            available_feature_s.remove(previous_feature)
-
-        if available_feature_s:
-            new_feature = random.choice(available_feature_s)
-            previous_feature = new_feature
-            feature.set(str(new_feature))
-
 reroll_item_enabled = True
 previous_item = None
 new_item = None
@@ -388,6 +375,34 @@ def reroll_setting():
             previous_setting = new_setting
             setting.set(str(new_setting))
 
+reroll_extra_enabled = True
+previous_extra = None
+new_extra = None
+
+def toggle_reroll_extra():
+    global reroll_extra_enabled
+    reroll_extra_enabled = not reroll_extra_enabled
+
+    if reroll_extra_enabled:
+        extralabel2.config(fg="#9ADCFF")
+        extralabel1.config(fg="white")
+    else:
+        extralabel2.config(fg="gray")
+        extralabel1.config(fg="gray")
+
+def reroll_extra():
+    global extra, previous_extra
+    if reroll_extra_enabled:
+        available_extra_s = list(set(extralist))
+
+        if previous_extra in available_extra_s:
+            available_extra_s.remove(previous_extra)
+
+        if available_extra_s:
+            new_extra = random.choice(available_extra_s)
+            previous_extra = new_extra
+            extra.set(str(new_extra))
+
 
 # Window GUI
 
@@ -412,12 +427,12 @@ age = StringVar()
 species = StringVar()
 job = StringVar()
 main = StringVar()
-feature = StringVar()
 item = StringVar()
 supers = StringVar()
 animal = StringVar()
 enviro = StringVar()
 setting = StringVar()
+extra = StringVar()
 
 randomize() # randomizes everything on opening the program
 
@@ -483,66 +498,67 @@ mainlabel1.grid(row=6, column=3, padx=2, pady=1, sticky="w")
 mainlabel2 = Label(window, textvariable=main, fg="#9ADCFF")
 mainlabel2.grid(row=6, column=4, sticky="w")
 
-button = Checkbutton(window, command=toggle_reroll_feature, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=7, column=1, sticky="e")
-featurebutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
-featurebutton.config(command=reroll_feature)
-featurebutton.grid(row=7, column=2, padx=2, pady=5, sticky="w")
-featurelabel1 = Label(window, text="Feature", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-featurelabel1.grid(row=7, column=3, padx=2, pady=1, sticky="w")
-featurelabel2 = Label(window, textvariable=feature, fg="#9ADCFF")
-featurelabel2.grid(row=7, column=4, sticky="w")
-
 button = Checkbutton(window, command=toggle_reroll_item, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=8, column=1, sticky="e")
+button.grid(row=7, column=1, sticky="e")
 itembutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
 itembutton.config(command=reroll_item)
-itembutton.grid(row=8, column=2, padx=2, pady=5, sticky="w")
+itembutton.grid(row=7, column=2, padx=2, pady=5, sticky="w")
 itemlabel1 = Label(window, text="Item or items", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-itemlabel1.grid(row=8, column=3, padx=2, pady=1, sticky="w")
+itemlabel1.grid(row=7, column=3, padx=2, pady=1, sticky="w")
 itemlabel2 = Label(window, textvariable=item, fg="#9ADCFF")
-itemlabel2.grid(row=8, column=4, sticky="w")
+itemlabel2.grid(row=7, column=4, sticky="w")
 
 button = Checkbutton(window, command=toggle_reroll_supers, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=9, column=1, sticky="e")
+button.grid(row=8, column=1, sticky="e")
 supersbutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
 supersbutton.config(command=reroll_supers)
-supersbutton.grid(row=9, column=2, padx=2, pady=5, sticky="w")
+supersbutton.grid(row=8, column=2, padx=2, pady=5, sticky="w")
 superslabel1 = Label(window, text="Super ability", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-superslabel1.grid(row=9, column=3, padx=2, pady=1, sticky="w")
+superslabel1.grid(row=8, column=3, padx=2, pady=1, sticky="w")
 superslabel2 = Label(window, textvariable=supers, fg="#9ADCFF")
-superslabel2.grid(row=9, column=4, sticky="w")
+superslabel2.grid(row=8, column=4, sticky="w")
 
 button = Checkbutton(window, command=toggle_reroll_animal, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=10, column=1, sticky="e")
+button.grid(row=9, column=1, sticky="e")
 animalbutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
 animalbutton.config(command=reroll_animal)
-animalbutton.grid(row=10, column=2, padx=2, pady=5, sticky="w")
+animalbutton.grid(row=9, column=2, padx=2, pady=5, sticky="w")
 animallabel1 = Label(window, text="Animal Aspect", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-animallabel1.grid(row=10, column=3, padx=2, pady=1, sticky="w")
+animallabel1.grid(row=9, column=3, padx=2, pady=1, sticky="w")
 animallabel2 = Label(window, textvariable=animal, fg="#9ADCFF")
-animallabel2.grid(row=10, column=4, sticky="w")
+animallabel2.grid(row=9, column=4, sticky="w")
 
 button = Checkbutton(window, command=toggle_reroll_enviro, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=11, column=1, sticky="e")
+button.grid(row=10, column=1, sticky="e")
 envirobutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
 envirobutton.config(command=reroll_enviro)
-envirobutton.grid(row=11, column=2, padx=2, pady=5, sticky="w")
+envirobutton.grid(row=10, column=2, padx=2, pady=5, sticky="w")
 envirolabel1 = Label(window, text="Enviroment", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-envirolabel1.grid(row=11, column=3, padx=2, pady=1, sticky="w")
+envirolabel1.grid(row=10, column=3, padx=2, pady=1, sticky="w")
 envirolabel2 = Label(window, textvariable=enviro, fg="#9ADCFF")
-envirolabel2.grid(row=11, column=4, sticky="w")
+envirolabel2.grid(row=10, column=4, sticky="w")
 
 button = Checkbutton(window, command=toggle_reroll_setting, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
-button.grid(row=12, column=1, sticky="e")
+button.grid(row=11, column=1, sticky="e")
 settingbutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
 settingbutton.config(command=reroll_setting)
-settingbutton.grid(row=12, column=2, padx=2, pady=5, sticky="w")
+settingbutton.grid(row=11, column=2, padx=2, pady=5, sticky="w")
 settinglabel1 = Label(window, text="Setting", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
-settinglabel1.grid(row=12, column=3, padx=2, pady=1, sticky="w")
+settinglabel1.grid(row=11, column=3, padx=2, pady=1, sticky="w")
 settinglabel2 = Label(window, textvariable=setting, fg="#9ADCFF")
-settinglabel2.grid(row=12, column=4, sticky="w")
+settinglabel2.grid(row=11, column=4, sticky="w")
 
+# extra
+
+button = Checkbutton(window, command=toggle_reroll_extra, bg="#353535", font=("Corbel", 12), anchor="e", width=1)
+button.grid(row=12, column=1, sticky="e")
+extrabutton = Button(window, text="Reroll", bg="#353535", font=("Corbel", 12), anchor="center", width=5)
+extrabutton.config(command=reroll_extra)
+extrabutton.grid(row=12, column=2, padx=2, pady=5, sticky="w")
+extralabel1 = Label(window, text="Extra", font=("Corbel", 20, "bold"), anchor="center", fg="white", bg="#353535")
+extralabel1.grid(row=12, column=3, padx=2, pady=1, sticky="w")
+extralabel2 = Label(window, textvariable=extra, fg="#9ADCFF")
+extralabel2.grid(row=12, column=4, sticky="w")
 
 # reroll button and copy
 button = Button(window, text="Randomize!", bg="#43AFD3", fg="#1C1C1C", anchor="center", width=41)
