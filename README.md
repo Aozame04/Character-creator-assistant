@@ -14,7 +14,7 @@
 - make a proper icon
 - add a themed background
 
-Please let me know if sonething breaks
+Please let me know if something breaks
 
 ## A NOTICE:
 Please do not use this to generate characters with AI. This is strictly a tool for artists to use.
