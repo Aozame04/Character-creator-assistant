@@ -1,4 +1,5 @@
 # Character art prompt randomizer!
+To download, click releases and download the zip!
 
 ## FEATURES:
 - 600+ built in prompts!
